@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <title>Visning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Hindrer at full StoryMap-URL sendes som referrer hvis brukeren klikker lenker inni innholdet -->
+  <meta name="referrer" content="no-referrer" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000; /* pent ved innlasting og mørke storymaps */
+    }
+    .wrap {
+      position: fixed; /* strekker over hele viewport */
+      inset: 0;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+    /* Valgfritt: skjul rullefelt i enkelte nettlesere rundt iframe */
+    body { overflow: hidden; }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+  <div class="wrap" role="region" aria-label="Innebygd StoryMap">
+    <iframe src="https://storymaps.arcgis.com/stories/4571c4f5ea6e4ffbb71667f4689e31f8" width="100%" height="500px" frameborder="0" allowfullscreen allow="geolocation" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"></iframe>
+  </div>
+
+  <noscript>
+    Denne siden krever JavaScript for å vise StoryMap.
+  </noscript>
+</body>
+
+</html>
+
