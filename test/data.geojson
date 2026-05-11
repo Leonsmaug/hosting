@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "navn": "Punkt A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.0, 58.15]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "navn": "Punkt B"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.02, 58.16]
+      }
+    }
+  ]
+}
