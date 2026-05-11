@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Testkart (PMTiles + MapLibre)</title>
+
+  <!-- MapLibre GL JS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js"
+    crossorigin="anonymous"
+  ></script>
+
+  <!-- PMTiles -->
+  <script src="https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js"></script>
+
+  <style>
+    html, body, #map { height: 100%; width: 100%; margin: 0; padding: 0; }
+    .hint {
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      left: 10px;
+      background: rgba(255,255,255,0.9);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hint">
+    Viser <code>data.pmtiles</code> fra <code>/test/</code> (serverless).
+  </div>
+  <div id="map"></div>
+
+  <script>
+    // 1) Registrer PMTiles-protokollen i MapLibre (må gjøres én gang globalt)
+    const protocol = new pmtiles.Protocol({ metadata: true });
+    maplibregl.addProtocol("pmtiles", protocol.tile); // pmtiles://... [1](https://bing.com/search?q=MapLibre+GL+JS+static+site+GitHub+Pages+example)[2](https://github.com/maplibre/maplibre-gl-js)
+
+    // 2) Bygg en absolut URL til PMTiles-fila som ligger i samme mappe som denne index.html
+    const PMTILES_URL = new URL("data.pmtiles", window.location.href).href;
+
+    // 3) Lag kartet
+    const map = new maplibregl.Map({
+      container: "map",
+      // Startposisjon – juster hvis du vil
+      center: [8.01, 58.155],
+      zoom: 11.5,
+      style: {
+        version: 8,
+        sources: {
+          data: {
+            type: "vector",
+            url: `pmtiles://${PMTILES_URL}` // MapLibre PMTiles-protokoll [1](https://bing.com/search?q=MapLibre+GL+JS+static+site+GitHub+Pages+example)[2](https://github.com/maplibre/maplibre-gl-js)
+          }
+        },
+        layers: [
+          {
+            id: "points-circle",
+            type: "circle",
+            source: "data",
+            "source-layer": "points", // må matche --layer=points i tippecanoe-workflowen
+            paint: {
+              "circle-radius": 6,
+              "circle-color": "#d30f4b",
+              "circle-stroke-width": 1,
+              "circle-stroke-color": "#ffffff"
+            }
+          }
+        ]
+      }
+    });
+
+    map.addControl(new maplibregl.NavigationControl());
+
+    // 4) Klikk-popup (valgfritt, men nyttig for test)
+    map.on("click", "points-circle", (e) => {
+      const props = e.features?.[0]?.properties || {};
+      const html = Object.keys(props).length
+        ? `<pre style="margin:0">${escapeHtml(JSON.stringify(props, null, 2))}</pre>`
+        : "<b>Ingen attributter</b>";
+
+      new maplibregl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
+    });
+
+    map.on("mouseenter", "points-circle", () => map.getCanvas().style.cursor = "pointer");
+    map.on("mouseleave", "points-circle", () => map.getCanvas().style.cursor = "");
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, s => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;"
+      }[s]));
+    }
+  </script>
+</body>
+</html>
