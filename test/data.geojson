@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "id": 1,
-        "navn": "Punkt A"
+        "navn": "Punkt A1"
       },
       "geometry": {
         "type": "Point",
@@ -16,7 +16,7 @@
       "type": "Feature",
       "properties": {
         "id": 2,
-        "navn": "Punkt B"
+        "navn": "Punkt B1"
       },
       "geometry": {
         "type": "Point",
