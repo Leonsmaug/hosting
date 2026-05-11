@@ -1,0 +1,35 @@
+name: Build PMTiles from GeoJSON
+
+on:
+  push:
+    paths:
+      - "test/data.geojson"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install tippecanoe
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tippecanoe
+
+      - name: Build PMTiles
+        run: |
+          tippecanoe \
+            -o test/data.pmtiles \
+            -zg \
+            --layer=points \
+            test/data.geojson
+
+      - name: Commit PMTiles
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add test/data.pmtiles
+          git commit -m "Build PMTiles from test/data.geojson" || echo "No changes"
+          git push
